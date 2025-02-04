@@ -1,4 +1,15 @@
-// Blog Class - ร์บผิดชอบจดการ์ขีอมล็บล็อก
+// Blog Class - รับผิดชอบการจัดการข้อมูลบล็อก
+let todos = JSON.parse(localStorage.getItem("todos")) || [];
+
+function addTodo() {
+    const input = document.getElementById("todoInput");
+    const text = input.value.trim();
+    if (text) {
+        todos.push({ text, done: false });
+        input.value = "";
+        displayTodos();
+    }
+}
 class Blog {
     constructor(id, title, content) {
       this.id = id;
@@ -21,9 +32,10 @@ class Blog {
         minute: "2-digit",
       });
     }
-   }
-   // BlogManager Class - ร์บผิดชอบจดการ์ array ขีองบล็อก
-   class BlogManager {
+}
+
+// BlogManager Class - รับผิดชอบการจัดการ array ข้อมูลบล็อก
+class BlogManager {
     constructor() {
       this.blogs = [];
     }
@@ -50,9 +62,10 @@ class Blog {
     sortBlogs() {
       this.blogs.sort((a, b) => b.updatedDate - a.updatedDate);
     }
-   }
-   // UI Class - ร์บผิดชอบจดการ์ DOM แล็ะ Events
-   class BlogUI {
+}
+
+// UI Class - รับผิดชอบการจัดการ DOM และ Events
+class BlogUI {
     constructor(blogManager) {
       this.blogManager = blogManager;
       this.initElements();
@@ -69,12 +82,12 @@ class Blog {
       this.blogList = document.getElementById("blog-list");
     }
     initEventListeners() {
-      // จดการ์การ์ submit form
+      // จัดการการ submit form
       this.form.addEventListener("submit", (e) => {
         e.preventDefault();
         this.handleSubmit();
       });
-      // จดการ์ปุ่มยกเล็ก
+      // จัดการปุ่มยกเลิก
       this.cancelBtn.addEventListener("click", () => {
         this.resetForm();
       });
@@ -99,13 +112,13 @@ class Blog {
         this.titleInput.value = blog.title;
         this.contentInput.value = blog.content;
         this.editIdInput.value = blog.id;
-        this.formTitle.textContent = "แกไขีบล็อก";
+        this.formTitle.textContent = "แก้ไขบล็อก";
         this.cancelBtn.classList.remove("hidden");
         window.scrollTo(0, 0);
       }
     }
     deleteBlog(id) {
-      if (confirm("ต้องการ์ล็บบล็อกนใชหร์อไม?")) {
+      if (confirm("ต้องการลบบล็อกนี้หรือไม่?")) {
         this.blogManager.deleteBlog(id);
         this.render();
       }
@@ -113,7 +126,7 @@ class Blog {
     resetForm() {
       this.form.reset();
       this.editIdInput.value = "";
-      this.formTitle.textContent = "เขียนบล็อกใหม";
+      this.formTitle.textContent = "เขียนบล็อกใหม่";
       this.cancelBtn.classList.add("hidden");
     }
     render() {
@@ -123,7 +136,7 @@ class Blog {
             <div class="blog-post">
                 <h2 class="blog-title">${blog.title}</h2>
                 <div class="blog-date">
-                    อพิ่เดทึเมอ: ${blog.getFormattedDate()}
+                    อัปเดตเมื่อ: ${blog.getFormattedDate()}
                 </div>
                 <div class="blog-content">
                     ${blog.content.replace(/\n/g, "<br>")}
@@ -131,17 +144,18 @@ class Blog {
                 <div class="blog-actions">
                     <button class="btn-edit" onclick="blogUI.editBlog(${
                       blog.id
-                    })">แกไขี</button>
+                    })">แก้ไข</button>
                     <button class="btn-delete" onclick="blogUI.deleteBlog(${
                       blog.id
-                    })">ล็บ</button>
+                    })">ลบ</button>
                 </div>
             </div>
         `
         )
         .join("");
     }
-   }
-   // สร์าง instance แล็ะเร์มต้นใชงาน
-   const blogManager = new BlogManager();
-   const blogUI = new BlogUI(blogManager);
+}
+
+// สร้าง instance และเริ่มต้นใช้งาน
+const blogManager = new BlogManager();
+const blogUI = new BlogUI(blogManager);
